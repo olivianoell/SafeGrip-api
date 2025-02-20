@@ -15,7 +15,7 @@ function writeUserData(updatedData) {
     fs.writeFileSync("./data/user.json", JSON.stringify(updatedData, null, 2)); 
 }
 
-router.post("/myGear", (req, res) => {
+router.post("/", (req, res) => {
     const { gear, purchase_date, usage_frequency } = req.body;
 
     const frequencyMap = {
@@ -68,7 +68,7 @@ router.post("/myGear", (req, res) => {
     });
 });
 
-router.get("/myGear", (req, res) => {
+router.get("/", (req, res) => {
     const userData = readUserData();
     res.status(200).json(userData);
 });
