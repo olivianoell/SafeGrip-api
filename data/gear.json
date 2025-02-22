@@ -1,22 +1,44 @@
-{
-    "gear": ["harness", "rope", "nylon-sling"],
+[
+  {
+    "gear": "harness",
     "purchase_date": "2025-02-18",  
-    "usage_frequency": [
-      {
-        "Unused and correctly stored": "10",
-        "Used once or twice a year": "7",
-        "Used once a month": "5",
-        "Used several times a month": "3",
-        "Used every week": "1",
-        "Used almost daily": "0.5"
-      }
-    ],
-    "purchase_link": [
-      {
-      "harness": "https://www.mec.ca/en/products/climbing/climbing-gear/climbing-harnesses/harnesses", 
-      "rope": "https://www.mec.ca/en/products/climbing/climbing-gear/ropes-cords-and-slings/dynamic-climbing-ropes", 
-      "nylon-sling": "https://www.mec.ca/en/products/climbing/climbing-gear/ropes-cords-and-slings/slings-and-webbing"
-      }
-    ]
-}
-  
+    "usage_frequency": {
+      "Unused and correctly stored": "10",
+      "Used once or twice a year": "7",
+      "Used once a month": "5",
+      "Used several times a month": "3",
+      "Used every week": "1",
+      "Used almost daily": "0.5"
+    },
+    "purchase_link": "https://www.mec.ca/en/products/climbing/climbing-gear/climbing-harnesses/harnesses",
+    "expiry_date": "2025-02-18"
+  },
+  {
+    "gear": "rope",
+    "purchase_date": "2025-02-18",  
+    "usage_frequency": {
+      "Unused and correctly stored": "10",
+      "Used once or twice a year": "7",
+      "Used once a month": "5",
+      "Used several times a month": "3",
+      "Used every week": "1",
+      "Used almost daily": "0.5"
+    },
+    "purchase_link": "https://www.mec.ca/en/products/climbing/climbing-gear/ropes-cords-and-slings/dynamic-climbing-ropes",
+    "expiry_date": "2025-02-18"
+  },
+  {
+    "gear": "nylon-sling",
+    "purchase_date": "2025-02-18",  
+    "usage_frequency": {
+      "Unused and correctly stored": "10",
+      "Used once or twice a year": "7",
+      "Used once a month": "5",
+      "Used several times a month": "3",
+      "Used every week": "1",
+      "Used almost daily": "0.5"
+    },
+    "purchase_link": "https://www.mec.ca/en/products/climbing/climbing-gear/ropes-cords-and-slings/slings-and-webbing",
+    "expiry_date": "2025-02-18"
+  }
+]

@@ -17,60 +17,74 @@ router.get("/", (req, res) => {
     res.json(gear);
 });
 
-router.put("/gear_selected", (req, res) => {
-    const { gear } = req.body;
+router.get("/:gear", (req, res) => {
+    const { gear } = req.params;
+    const allGearData = readGear();
     
-    if (!["harness", "rope", "nylon-sling"].includes(gear)) {
-        return res.status(400).json({ error: "Invalid gear selected" });
+    const gearData = allGearData.find(g => g.gear === gear);
+
+    if (!gearData) {
+        return res.status(404).json({ error: "Gear not found" });
     }
 
-    const data = readGear();
-    data.gear = [gear]; 
-
-    writeGear(data);
-    res.status(200).json({ message: "Gear updated successfully", gear: data.gear });
+    res.json(gearData);
 });
 
-router.put("/purchase_date", (req, res) => {
-    const { purchase_date } = req.body;
+router.get("/:gear/purchase_date", (req, res) => {
+    const { gear } = req.params;
+    const allGearData = readGear();
 
-    const isValidDate = !isNaN(Date.parse(purchase_date));
-    if (!isValidDate) {
-        return res.status(400).json({ error: "Invalid date format" });
+    const gearData = allGearData.find(g => g.gear === gear);
+
+    if (!gearData) {
+        return res.status(404).json({ error: "Gear not found" });
     }
 
-    const data = readGear();
-    data.purchase_date = purchase_date;
-
-    writeGear(data);
-    res.status(200).json({ message: "Purchase date updated successfully", purchase_date: data.purchase_date });
+    res.json({ purchase_date: gearData.purchase_date });
 });
 
-router.put("/usage_frequency", (req, res) => {
-    const { usage_frequency } = req.body;
+router.get("/:gear/usage_frequency", (req, res) => {
+    const { gear } = req.params;
+    const allGearData = readGear();
 
-    const validFrequencies = [
-        "Unused and correctly stored", 
-        "Used once or twice a year", 
-        "Used once a month", 
-        "Used several times a month", 
-        "Used every week", 
-        "Used almost daily"
-    ];
+    const gearData = allGearData.find(g => g.gear === gear);
 
-    if (!validFrequencies.includes(usage_frequency)) {
-        return res.status(400).json({ error: "Invalid usage frequency selected" });
+    if (!gearData) {
+        return res.status(404).json({ error: "Gear not found" });
     }
 
-    const data = readGear();
-    data.usage_frequency = usage_frequency;
-
-    writeGear(data);
-    res.status(200).json({ message: "Usage frequency updated successfully", usage_frequency: data.usage_frequency });
+    res.json({ usage_frequency: gearData.usage_frequency });
 });
 
-router.post("/expiry_date", (req, res) => {
-    const { purchase_date, usage_frequency } = req.body;
+router.get("/:gear/purchase_link", (req, res) => {
+    const { gear } = req.params;
+    const allGearData = readGear();
+
+    const gearData = allGearData.find(g => g.gear === gear);
+
+    if (!gearData) {
+        return res.status(404).json({ error: "Gear not found" });
+    }
+
+    res.json({ purchase_link: gearData.purchase_link });
+});
+
+router.get("/:gear/expiry_date", (req, res) => {
+    const { gear } = req.params;
+    const allGearData = readGear();
+
+    const gearData = allGearData.find(g => g.gear === gear);
+
+    if (!gearData) {
+        return res.status(404).json({ error: "Gear not found" });
+    }
+
+    const { purchase_date, usage_frequency } = gearData;
+
+    if (!purchase_date || !usage_frequency) {
+        return res.status(400).json({ error: "Missing required fields (purchase_date or usage_frequency)" });
+    }
+
     const frequencyMap = {
         "Unused and correctly stored": 10,
         "Used once or twice a year": 7,
@@ -80,33 +94,91 @@ router.post("/expiry_date", (req, res) => {
         "Used almost daily": 0.5
     };
 
-    const frequencyValue = frequencyMap[usage_frequency];
-    if (!frequencyValue) {
+    let frequencyValue = null;
+    for (const key in usage_frequency) {
+        if (usage_frequency.hasOwnProperty(key)) {
+            frequencyValue = frequencyMap[key];
+            break; 
+        }
+    }
+
+    if (frequencyValue === null) {
         return res.status(400).json({ error: "Invalid usage frequency" });
     }
 
     const purchaseDate = new Date(purchase_date);
-    const expiryDate = new Date(purchaseDate);
-    expiryDate.setFullYear(expiryDate.getFullYear() + frequencyValue);
+    if (isNaN(purchaseDate)) {
+        return res.status(400).json({ error: "Invalid purchase date" });
+    }
 
-    res.status(200).json({ expiry_date: expiryDate.toISOString().split("T")[0] });
+    purchaseDate.setFullYear(purchaseDate.getFullYear() + frequencyValue);
+
+    const expiryDate = purchaseDate.toISOString().split("T")[0];
+
+    res.json({ expiry_date: expiryDate });
 });
 
-router.post("/check_expiry", (req, res) => {
-    const { expiry_date, gear } = req.body;
+router.post("/:gear/expiry_date", (req, res) => {
+    const { gear } = req.params;
+    const { purchase_date, usage_frequency } = req.body;
 
-    const data = readGear();
-    const expiryDate = new Date(expiry_date);
-    const currentDate = new Date();
-    const diffTime = expiryDate - currentDate;
-    const diffYears = diffTime / (1000 * 60 * 60 * 24 * 365); 
-    
-    if (diffYears <= 1) {
-        const purchaseLink = data.purchase_link[0][gear];
-        res.status(200).json({ message: "Expiry date is within one year", purchase_link: purchaseLink });
-    } else {
-        res.status(200).json({ message: "Expiry date is more than one year away" });
+    if (!purchase_date || !usage_frequency) {
+        return res.status(400).json({ error: "Missing purchase_date or usage_frequency" });
     }
+
+    const allGearData = readGear();
+    const gearData = allGearData.find(g => g.gear === gear);
+
+    if (!gearData) {
+        return res.status(404).json({ error: "Gear not found" });
+    }
+
+    const frequencyMap = {
+        "Unused and correctly stored": 10,
+        "Used once or twice a year": 7,
+        "Used once a month": 5,
+        "Used several times a month": 3,
+        "Used every week": 1,
+        "Used almost daily": 0.5
+    };
+
+    let frequencyValue = frequencyMap[usage_frequency];
+    if (frequencyValue === undefined) {
+        return res.status(400).json({ error: "Invalid usage frequency" });
+    }
+
+    const purchaseDate = new Date(purchase_date);
+    if (isNaN(purchaseDate)) {
+        return res.status(400).json({ error: "Invalid purchase date format" });
+    }
+
+    purchaseDate.setFullYear(purchaseDate.getFullYear() + frequencyValue);
+
+    const expiryDate = purchaseDate.toISOString().split("T")[0]; 
+
+    res.status(200).json({ expiry_date: expiryDate });
+});
+
+router.post("/:gear/purchase_link", (req, res) => {
+    const { gear } = req.params;
+    const { purchase_link } = req.body;
+
+    if (!purchase_link || !isValidUrl(purchase_link)) {
+        return res.status(400).json({ error: "Invalid or missing purchase_link" });
+    }
+
+    const allGearData = readGear();
+    const gearData = allGearData.find(g => g.gear === gear);
+
+    if (!gearData) {
+        return res.status(404).json({ error: "Gear not found" });
+    }
+
+    gearData.purchase_link = purchase_link;
+
+    writeGear(allGearData);
+
+    res.status(200).json({ message: "Purchase link updated successfully", purchase_link: gearData.purchase_link });
 });
 
 export default router;
