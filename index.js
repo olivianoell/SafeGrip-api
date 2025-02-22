@@ -3,7 +3,7 @@ const app = express();
 const PORT = 8080;
 import cors from "cors";
 import gearRoute from "./routes/gear.js";
-import myGearRoute from "./routes/myGear.js";
+import userRoute from "./routes/user.js";
 
 app.use(cors());
 
@@ -13,10 +13,8 @@ app.get("/", (_req, res) => {
   res.send("SafeGrip");
 });
 
-const gearItems = [];
-
 app.use("/gear", gearRoute);
-app.use("/myGear", myGearRoute);
+app.use("/user", userRoute);
 
 app.listen(PORT, () => {
     console.log("Server is running on " + PORT);
