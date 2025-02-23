@@ -90,8 +90,7 @@ router.get("/:gear/expiry_date", (req, res) => {
         "Used once or twice a year": 7,
         "Used once a month": 5,
         "Used several times a month": 3,
-        "Used every week": 1,
-        "Used almost daily": 0.5
+        "Used every week": 1
     };
 
     let frequencyValue = null;

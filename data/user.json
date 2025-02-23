@@ -1,1 +1,11 @@
-[]
+{
+  "gearData": [
+    {
+      "gear": "Rope",
+      "purchase_date": "2025-02-09",
+      "usage_frequency": "Used once or twice a year",
+      "expiry_date": "2032-02-09",
+      "purchase_link": ""
+    }
+  ]
+}
