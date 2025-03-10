@@ -61,19 +61,19 @@ User.json
 
 ### Endpoints
 
-GET: "/gear"
-GET: "/gear/:gear"
-GET: "/gear/:gear/purchase_date"
-GET: "/gear/:gear/usage_frequency"
-GET: "/gear/:gear/purchase_link"
-GET: "/gear/:gear/expiry_date"
-POST: "/gear/:gear/expiry_date"
-POST: "/gear/:gear/purchase_link"
+- GET: "/gear"
+- GET: "/gear/:gear"
+- GET: "/gear/:gear/purchase_date"
+- GET: "/gear/:gear/usage_frequency"
+- GET: "/gear/:gear/purchase_link"
+- GET: "/gear/:gear/expiry_date"
+- POST: "/gear/:gear/expiry_date"
+- POST: "/gear/:gear/purchase_link"
 
-GET: "/user"
-GET: "/user/UserGear"
-POST: "/user/submit"
-DELETE: "/user/deleteGear"
+- GET: "/user"
+- GET: "/user/UserGear"
+- POST: "/user/submit"
+- DELETE: "/user/deleteGear"
 
 
 ## Future Implementations
